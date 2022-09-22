@@ -773,11 +773,6 @@ user_products.head(5)
 # COMMAND ----------
 
 # DBTITLE 1,Retrieve Scores
-import os
-import requests
-import numpy as np
-import pandas as pd
-
 personal_access_token = dbutils.notebook.entry_point.getDbutils().notebook().getContext().apiToken().getOrElse(None)
 databricks_instance = dbutils.notebook.entry_point.getDbutils().notebook().getContext().apiUrl().getOrElse(None) 
 model_name = 'recommender'
@@ -796,76 +791,6 @@ def score_model(databricks_instance, personal_access_token, model_name, dataset)
 
 # call REST API for scoring
 score_model(databricks_instance, personal_access_token, model_name, user_products)
-
-# COMMAND ----------
-
-from mlflow.store.artifact.models_artifact_repo import ModelsArtifactRepository
-import os
-model_name = "recommender"
-model_uri = f"models:/{model_name}/Production"
-local_path = ModelsArtifactRepository(model_uri).download_artifacts("") # download model from remote registry
-
-requirements_path = os.path.join(local_path, "requirements.txt")
-if not os.path.exists(requirements_path):
-  dbutils.fs.put("file:" + requirements_path, "", True)
-
-# COMMAND ----------
-
-# MAGIC %pip install -r $requirements_path
-
-# COMMAND ----------
-
-import pyspark.sql.functions as f
-spark.sql("use instacart_wide_deep")
-import pandas as pd
-import requests
-
-# COMMAND ----------
-
-user_id = 123 # user 123
-aisle_id = 32 # packaged produce department
-
-# retrieve user features
-user_features = (
-  spark
-    .table('user_features')
-    .filter(f.expr('user_id={0}'.format(user_id)))
-  )
-
-# retrieve features for product in department
-product_features = (
-  spark
-    .table('product_features')
-    .filter('aisle_id={0}'.format(aisle_id))
-  )
-
-# combine for scoring
-user_products = (
-  user_features
-    .crossJoin(product_features)
-    .toPandas()
-    )
-
-# show sample of feature set
-user_products.head(5)
-
-# COMMAND ----------
-
-# redefining key variables here because %pip and %conda restarts the Python interpreter
-model_name = "recommender"
-import mlflow
-from pyspark.sql.functions import struct
-
-model_uri = f"models:/{model_name}/Production"
-
-# create spark user-defined function for model prediction
-predict = mlflow.pyfunc.spark_udf(spark, model_uri, result_type="double")
-
-# COMMAND ----------
-
-table = (user_features
-    .crossJoin(product_features))
-display(table.withColumn("prediction", predict(struct(*table.columns))))
 
 # COMMAND ----------
 
