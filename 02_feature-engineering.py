@@ -1,4 +1,9 @@
 # Databricks notebook source
+# MAGIC %md 
+# MAGIC You may find this series of notebooks at https://github.com/databricks-industry-solutions/wide-and-deep. For more information about this solution accelerator, visit https://www.databricks.com/solutions/accelerators/recommendation-engines.
+
+# COMMAND ----------
+
 # MAGIC %md The purpose of this notebook is to engineer the features we will use to build a wide and deep collaborative filter recommender.  
 
 # COMMAND ----------
