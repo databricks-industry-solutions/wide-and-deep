@@ -795,7 +795,7 @@ def score_model(databricks_instance, personal_access_token, model_name, dataset)
   return response.json()
 
 # call REST API for scoring
-score_model(databricks_instance, personal_access_token, model_name, user_products)
+# score_model(databricks_instance, personal_access_token, model_name, user_products) # scoring works once model serving is deployed
 
 # COMMAND ----------
 
