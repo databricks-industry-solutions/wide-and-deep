@@ -87,7 +87,7 @@ for col in cat_features:
       .collect()[0]['keys']
     )
 
-# all other columns (except id) are continous features
+# all other columns (except id) are continuous features
 num_features = labeled_features.drop(*(['id',label_col]+cat_features)).columns
 
 # COMMAND ----------
@@ -256,7 +256,7 @@ def get_wide_features():
 
 # COMMAND ----------
 
-# MAGIC %md The feature inputs for the deep (neural network) component of the model are the features that describe our users and products in more generalized ways. By avoiding specific user and product IDs, the deep model is trained to learn attributes that signal preferences between users and products. For the categorical features, an [embedding](https://www.tensorflow.org/api_docs/python/tf/feature_column/embedding_column) is used to succintly capture the feature data.  The number of dimensions in the embedding is based on guidance in [this tutorial](https://tensorflow2.readthedocs.io/en/stable/tensorflow/g3doc/tutorials/wide_and_deep/):
+# MAGIC %md The feature inputs for the deep (neural network) component of the model are the features that describe our users and products in more generalized ways. By avoiding specific user and product IDs, the deep model is trained to learn attributes that signal preferences between users and products. For the categorical features, an [embedding](https://www.tensorflow.org/api_docs/python/tf/feature_column/embedding_column) is used to succinctly capture the feature data.  The number of dimensions in the embedding is based on guidance in [this tutorial](https://tensorflow2.readthedocs.io/en/stable/tensorflow/g3doc/tutorials/wide_and_deep/):
 
 # COMMAND ----------
 
@@ -283,7 +283,7 @@ def get_deep_features():
                           dimension=int(np.max(cat_keys[col])**0.25)
                           )] 
 
-  # continous features
+  # continuous features
   for col in num_features:
     deep_columns += [tf.feature_column.numeric_column(col)]  
     
@@ -623,7 +623,7 @@ class Recommender(mlflow.pyfunc.PythonModel):
 # use user 123 as sample user
 user_id = spark.createDataFrame([(123,)], ['user_id'])
 
-# get features for user and small number of producs
+# get features for user and small number of products
 sample_pd = (
   user_id
     .join(user_features, on='user_id') # get user features
